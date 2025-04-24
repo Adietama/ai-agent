@@ -25,6 +25,8 @@ interface AnalysisBoxProps {
     reason: string;
   };
   fundamental?: string;
+  pair: string;
+  setPair: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function AnalysisBox({

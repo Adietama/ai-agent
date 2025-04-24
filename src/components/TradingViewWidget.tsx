@@ -1,39 +1,60 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useEffect, useRef } from "react";
 
-const TradingViewWidget = () => {
-  const [pair, setPair] = useState('OANDA:XAUUSD'); // Default pair XAUUSD
+interface TradingViewWidgetProps {
+  pair: string; // ⬅️ Pair dari Box Analysis (XAUUSD / BTCUSD)
+}
 
-  const handlePairChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPair(e.target.value);
+const TradingViewWidget = ({ pair }: TradingViewWidgetProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Mapping symbol TradingView sesuai pair
+  const getSymbol = (pair: string) => {
+    if (pair === "XAUUSD") return "OANDA:XAUUSD";
+    if (pair === "BTCUSD") return "COINBASE:BTCUSD";
+    return "OANDA:XAUUSD"; // Default
   };
 
-  return (
-    <div className="w-full space-y-2 mb-6">
-      {/* Dropdown Pair */}
-      <div className="flex justify-end">
-        <select
-          value={pair}
-          onChange={handlePairChange}
-          className="bg-slate-800 text-white text-xs rounded p-1"
-        >
-          <option value="OANDA:XAUUSD">XAUUSD (Gold)</option>
-          <option value="COINBASE:BTCUSD">BTCUSD (Bitcoin)</option>
-        </select>
-      </div>
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.innerHTML = ""; // Bersihkan widget lama
+      const script = document.createElement("script");
+      script.src = "https://s3.tradingview.com/tv.js";
+      script.async = true;
+      script.onload = () => {
+        new (window as any).TradingView.widget({
+          width: "100%",
+          height: 580,
+          symbol: getSymbol(pair),
+          interval: "240",
+          timezone: "Asia/Jakarta",
+          theme: "dark",
+          style: "1",
+          locale: "en",
+          gridColor: "rgba(182, 182, 182, 0.06)",
+          withdateranges: true,
+          hide_side_toolbar: false,
+          watchlist:[
+            'GBEBROKERS:XAUUSD',
+            'COINBASE:BTCUSD'
+          ],
+          studies: [
+            "STD;EMA"
+          ],
+          container_id: "tradingview-widget-container",
+        });
+      };
+      containerRef.current.appendChild(script);
+    }
+  }, [pair]); // ⬅️ Depend on pair, jadi update kalau pair berubah
 
-      {/* TradingView Iframe */}
-      <div className="w-full h-[580px] rounded-2xl overflow-hidden shadow-lg">
-        <iframe
-          src={`https://s.tradingview.com/widgetembed/?symbol=${pair}&interval=240&theme=dark&style=1&timezone=Asia/Jakarta&withdateranges=1&hide_side_toolbar=false`}
-          width="100%"
-          height="580"
-          allowTransparency
-          frameBorder="0"
-          scrolling="no"
-          allowFullScreen
-        ></iframe>
-      </div>
+  return (
+    <div
+      className="tradingview-widget-container w-full mb-6"
+      id="tradingview-widget-container"
+      ref={containerRef}
+    >
+      <div className="tradingview-widget-container__widget" />
     </div>
   );
 };

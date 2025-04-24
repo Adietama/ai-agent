@@ -6,6 +6,7 @@ import AnalysisBox from "../components/AnalysisBox";
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [pair, setPair] = useState("XAUUSD");
 
   // 🔥 State untuk hasil Teknikal
   const [technicalResult, setTechnicalResult] = useState<{
@@ -174,7 +175,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
           {/* Chart Section */}
           <div className="lg:col-span-2">
-            <TradingViewWidget />
+            <TradingViewWidget pair={pair} />
           </div>
 
           {/* Analysis Box Section */}
@@ -183,6 +184,9 @@ export default function HomePage() {
               onGenerate={handleGenerate}
               isLoading={isLoading}
               aiResult={technicalResult}
+              fundamental={fundamentalResult}
+              pair={pair}
+              setPair={setPair}
             />
           </div>
 
