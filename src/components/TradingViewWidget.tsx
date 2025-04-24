@@ -7,7 +7,6 @@ declare global {
   }
 }
 
-
 import { useEffect, useRef } from "react";
 
 interface TradingViewWidgetProps {
