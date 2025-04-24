@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+:root {
+  --gap-size: 32px;
+  --bg-dark: #e2e4e8;
+  --card-bg: #dee0e2;
+  --text-light: #45474b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1000px) {
+  .container {
+    flex-direction: column;
+  }
+  .chart-container,
+  .analysis-box {
+    width: 100%;
+    height: 50%;
+  }
+}
