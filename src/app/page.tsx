@@ -19,7 +19,6 @@ export default function HomePage() {
 
   // 🔥 State untuk hasil Fundamental
   const [fundamentalResult, setFundamentalResult] = useState<string>('');
-  const [showFundamental, setShowFundamental] = useState(true);
 
   const handleGenerate = async (input: {
     pair: string;

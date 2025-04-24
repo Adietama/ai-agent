@@ -25,7 +25,7 @@ export default function RootLayout({
             </span>{" "}
             🛠️
           </p>
-          <p className="italic text-gray-400">"Trade & Code Like A Pro" 🚀 | “Building the bridge between strategy and technology”</p>
+          <p className="text-gray-400">&quot;Trade & Code Like A Pro&quot; 🚀 | &quot;Building the bridge between strategy and technology&quot;</p>
           <p className="text-gray-500">
             Version: <span className="text-gray-400">1.0.0</span>
           </p>

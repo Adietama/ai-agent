@@ -10,7 +10,7 @@ const TradingViewWidget = () => {
       script.src = 'https://s3.tradingview.com/tv.js';
       script.async = true;
       script.onload = () => {
-        new (window as any).TradingView.widget({
+        window.TradingView.widget({
           width: '100%',
           height: 580,
           symbol: 'GBEBROKERS:XAUUSD',
