@@ -92,7 +92,7 @@ export default function AnalysisBox({
         <div>
           <label className="block text-xs text-gray-400 mb-1">Pair</label>
           <select
-            className="w-full bg-slate-800 text-white text-xs rounded px-2 py-1"
+            className="bg-slate-800 p-2 rounded text-xs w-full"
             value={pair}
             onChange={(e) => setPair(e.target.value)}
           >

@@ -1,11 +1,4 @@
 "use client";
-declare global {
-  interface Window {
-    TradingView: {
-      widget: (options: Record<string, unknown>) => void;
-    };
-  }
-}
 
 import { useEffect, useRef } from "react";
 
@@ -24,22 +17,28 @@ const TradingViewWidget = ({ pair }: TradingViewWidgetProps) => {
       script.async = true;
       script.onload = () => {
         if (window.TradingView) {
-          window.TradingView.widget({
-            width: "100%",
-            height: 570,
-            symbol: pair === "BTCUSD" ? "COINBASE:BTCUSD" : "GBEBROKERS:XAUUSD",
-            interval: "240",
-            timezone: "Asia/Jakarta",
-            theme: "dark",
-            style: "1",
-            locale: "en",
-            gridColor: "rgba(182, 182, 182, 0.06)",
-            withdateranges: true,
-            hide_side_toolbar: false,
-            watchlist: ["GBEBROKERS:XAUUSD", "COINBASE:BTCUSD"],
-            studies: ["STD;EMA@34"],
-            container_id: "tradingview-widget-container",
+          console.log("📊 TradingView script loaded!");
+          window.TradingView.onready(() => {
+            console.log("📈 TradingView ready!");
+            window.TradingView.widget({
+              width: "100%",
+              height: 570,
+              symbol: pair === "BTCUSD" ? "COINBASE:BTCUSD" : "GBEBROKERS:XAUUSD",
+              interval: "240",
+              timezone: "Asia/Jakarta",
+              theme: "dark",
+              style: "1",
+              locale: "en",
+              gridColor: "rgba(182, 182, 182, 0.06)",
+              withdateranges: true,
+              hide_side_toolbar: false,
+              watchlist: ["GBEBROKERS:XAUUSD", "COINBASE:BTCUSD"],
+              studies: ["STD;EMA@34"],
+              container_id: "tradingview-widget-container",
+            });
           });
+        } else {
+          console.error("❌ TradingView script not loaded properly.");
         }
       };
       containerRef.current.appendChild(script);
