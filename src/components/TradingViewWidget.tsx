@@ -1,4 +1,13 @@
 "use client";
+declare global {
+  interface Window {
+    TradingView: {
+      widget: (options: Record<string, unknown>) => void;
+    };
+  }
+}
+
+
 import { useEffect, useRef } from "react";
 
 interface TradingViewWidgetProps {
@@ -22,7 +31,7 @@ const TradingViewWidget = ({ pair }: TradingViewWidgetProps) => {
       script.src = "https://s3.tradingview.com/tv.js";
       script.async = true;
       script.onload = () => {
-        new window.TradingView.widget({
+        window.TradingView.widget({
           width: "100%",
           height: 580,
           symbol: getSymbol(pair),
@@ -34,13 +43,8 @@ const TradingViewWidget = ({ pair }: TradingViewWidgetProps) => {
           gridColor: "rgba(182, 182, 182, 0.06)",
           withdateranges: true,
           hide_side_toolbar: false,
-          watchlist:[
-            'GBEBROKERS:XAUUSD',
-            'COINBASE:BTCUSD'
-          ],
-          studies: [
-            "STD;EMA"
-          ],
+          watchlist: ["GBEBROKERS:XAUUSD", "COINBASE:BTCUSD"],
+          studies: ["STD;EMA"],
           container_id: "tradingview-widget-container",
         });
       };
