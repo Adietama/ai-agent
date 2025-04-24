@@ -1,10 +1,7 @@
-export {}; // biar dianggap modul
+export {}; // Biar dianggap module
 
 declare global {
   interface Window {
-    TradingView: {
-      widget: (options: Record<string, unknown>) => void;
-    };
+    TradingView: any;
   }
 }
-
