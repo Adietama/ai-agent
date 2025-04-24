@@ -1,35 +1,30 @@
-'use client';
-import { useEffect, useRef } from 'react';
+"use client";
+import { useEffect, useRef } from "react";
 
 const TradingViewWidget = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containerRef.current && !containerRef.current.querySelector('iframe')) {
-      const script = document.createElement('script');
-      script.src = 'https://s3.tradingview.com/tv.js';
+    if (containerRef.current && !containerRef.current.querySelector("iframe")) {
+      const script = document.createElement("script");
+      script.src = "https://s3.tradingview.com/tv.js";
       script.async = true;
       script.onload = () => {
         window.TradingView.widget({
-          width: '100%',
+          width: "100%",
           height: 580,
-          symbol: 'GBEBROKERS:XAUUSD',
-          interval: '240',
-          timezone: 'Asia/Jakarta',
-          theme: 'dark',
-          style: '1',
-          locale: 'en',
-          gridColor: 'rgba(182, 182, 182, 0.06)',
+          symbol: "GBEBROKERS:XAUUSD",
+          interval: "240",
+          timezone: "Asia/Jakarta",
+          theme: "dark",
+          style: "1",
+          locale: "en",
+          gridColor: "rgba(182, 182, 182, 0.06)",
           withdateranges: true,
           hide_side_toolbar: false,
-          watchlist:[
-            'GBEBROKERS:XAUUSD',
-            'COINBASE:BTCUSD'
-          ],
-          studies: [
-            "STD;EMA"
-          ],
-          container_id: 'tradingview-widget-container',
+          watchlist: ["GBEBROKERS:XAUUSD", "COINBASE:BTCUSD"],
+          studies: ["STD;EMA"],
+          container_id: "tradingview-widget-container",
         });
       };
       containerRef.current.appendChild(script);

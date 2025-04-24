@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import TradingViewWidget from '../components/TradingViewWidget';
-import AnalysisBox from '../components/AnalysisBox';
+import { useState } from "react";
+import TradingViewWidget from "../components/TradingViewWidget";
+import AnalysisBox from "../components/AnalysisBox";
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function HomePage() {
   }>();
 
   // 🔥 State untuk hasil Fundamental
-  const [fundamentalResult, setFundamentalResult] = useState<string>('');
+  const [fundamentalResult, setFundamentalResult] = useState<string>("");
 
   const handleGenerate = async (input: {
     pair: string;
@@ -34,21 +34,22 @@ export default function HomePage() {
   }) => {
     setIsLoading(true);
 
-    // Generate POI aktif 
+    // Generate POI aktif
     const activePOIs = {
       ...(input.strategies.includes("Support") && { Support: input.support }),
-      ...(input.strategies.includes("Resistance") && { Resistance: input.resistance }),
+      ...(input.strategies.includes("Resistance") && {
+        Resistance: input.resistance,
+      }),
       ...(input.strategies.includes("RBS") && { RBS: input.rbs }),
       ...(input.strategies.includes("SBR") && { SBR: input.sbr }),
       ...(input.strategies.includes("OCL") && { OCL: input.ocl }),
       ...(input.strategies.includes("QM") && { Quasimodo: input.qm }),
     };
-    
+
     const poiString = Object.entries(activePOIs)
       .map(([key, value]) => `- ${key}: ${value}`)
       .join("\n");
-    
-  
+
     // 🔥 1. Prompt Teknikal
     const technicalPrompt = `
     Saya ingin menganalisa pair ${input.pair} dengan pendekatan multi-timeframe.
@@ -77,7 +78,7 @@ export default function HomePage() {
     }
     Pastikan output **tanpa tambahan apapun** (langsung JSON).
     `;
-  
+
     // 🔥 2. Prompt Fundamental
     const fundamentalPrompt = `
     Berikan analisis fundamental terbaru untuk ${input.pair}. Fokus ke faktor-faktor seperti:
@@ -89,79 +90,88 @@ export default function HomePage() {
     
     Buat penjelasan dampaknya ke ${input.pair} secara singkat dan jelas, dalam bahasa Indonesia. Gunakan format markdown seperti **bold**, *italic* jika perlu.
     `;
-  
+
     try {
       // 🔥 3. Fetch Teknikal dari DeepSeek V3
-      const technicalFetch = fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "AI Agent App",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "deepseek/deepseek-chat-v3-0324:free",
-          messages: [
-            { role: "user", content: technicalPrompt } // 🔥 Pakai variabel prompt
-          ]
-        })
-      });
-  
+      const technicalFetch = fetch(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
+            "HTTP-Referer": "http://localhost:3000",
+            "X-Title": "AI Agent App",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "deepseek/deepseek-chat-v3-0324:free",
+            messages: [
+              { role: "user", content: technicalPrompt }, // 🔥 Pakai variabel prompt
+            ],
+          }),
+        }
+      );
+
       // 🔥 4. Fetch Fundamental dari Qwen 32B
-      const fundamentalFetch = fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "AI Agent App",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "deepseek/deepseek-r1-distill-qwen-32b",
-          messages: [
-            { role: "user", content: fundamentalPrompt } // 🔥 Pakai variabel prompt
-          ]
-        })
-      });
-  
+      const fundamentalFetch = fetch(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
+            "HTTP-Referer": "http://localhost:3000",
+            "X-Title": "AI Agent App",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "deepseek/deepseek-r1-distill-qwen-32b",
+            messages: [
+              { role: "user", content: fundamentalPrompt }, // 🔥 Pakai variabel prompt
+            ],
+          }),
+        }
+      );
+
       // 🔄 Tunggu keduanya selesai paralel
-      const [technicalRes, fundamentalRes] = await Promise.all([technicalFetch, fundamentalFetch]);
-  
+      const [technicalRes, fundamentalRes] = await Promise.all([
+        technicalFetch,
+        fundamentalFetch,
+      ]);
+
       // 🔍 Proses hasil Teknikal
       const technicalData = await technicalRes.json();
       const techContent = technicalData.choices[0].message.content;
       const techMatch = techContent.match(/```json\s*([\s\S]*?)\s*```/i);
-      const techJsonString = techMatch ? techMatch[1].trim() : techContent.trim();
+      const techJsonString = techMatch
+        ? techMatch[1].trim()
+        : techContent.trim();
       const techParsed = JSON.parse(techJsonString);
-  
+
       setTechnicalResult({
         trend: techParsed.trend,
         bias: techParsed.bias,
         entry: techParsed.entry,
         sl: techParsed.sl,
         tp: techParsed.tp,
-        reason: techParsed.reason
+        reason: techParsed.reason,
       });
-  
+
       // 🔍 Proses hasil Fundamental
       const fundamentalData = await fundamentalRes.json();
       const fundamentalSummary = fundamentalData.choices[0].message.content;
       setFundamentalResult(fundamentalSummary);
-  
     } catch (err) {
       console.error("❌ Error AI Response:", err);
-      alert('Gagal mendapatkan analisa AI!');
+      alert("Gagal mendapatkan analisa AI!");
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <main className="text-white p-4 lg:p-2 min-h-screen pb-10">
       <div className="max-w-screen-2xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
-
           {/* Chart Section */}
           <div className="lg:col-span-2">
             <TradingViewWidget />
@@ -180,12 +190,18 @@ export default function HomePage() {
           {fundamentalResult && (
             <div className="lg:col-span-3">
               <div className="bg-gradient-to-br from-[#1f2937] to-[#0f172a] rounded-xl shadow p-5 text-xs text-gray-200 shadow">
-                <h3 className="text-lg font-semibold text-gray-300 mb-4">📊 Fundamental Analysis</h3>
-                <div dangerouslySetInnerHTML={{ __html: fundamentalResult.replace(/\n/g, '<br/>') }} />
+                <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                  📊 Fundamental Analysis
+                </h3>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: fundamentalResult.replace(/\n/g, "<br/>"),
+                  }}
+                />
               </div>
             </div>
           )}
-        </div>        
+        </div>
       </div>
     </main>
   );

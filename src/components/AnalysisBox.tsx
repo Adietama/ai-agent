@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface AnalysisBoxProps {
   onGenerate: (input: {
@@ -24,17 +24,17 @@ interface AnalysisBoxProps {
     tp: string;
     reason: string;
   };
-  fundamental?: string; 
+  fundamental?: string;
 }
 
 export default function AnalysisBox({
   onGenerate,
   isLoading,
   aiResult,
-  fundamental
+  fundamental,
 }: AnalysisBoxProps) {
-  const [pair, setPair] = useState('XAUUSD');
-  const [timeframe, setTimeframe] = useState('H1');
+  const [pair, setPair] = useState("XAUUSD");
+  const [timeframe, setTimeframe] = useState("H1");
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [support, setSupport] = useState<number>(0);
   const [resistance, setResistance] = useState<number>(0);
@@ -65,7 +65,7 @@ export default function AnalysisBox({
       sbr,
       ocl,
       qm,
-      strategies
+      strategies,
     });
   };
 
@@ -80,13 +80,12 @@ export default function AnalysisBox({
           disabled={isLoading}
           className="mt-4 bg-blue-500 px-3 py-1 rounded hover:bg-blue-600 text-xs disabled:opacity-50"
         >
-          {isLoading ? 'Think...' : '🔍 Analysis'}
+          {isLoading ? "Think..." : "🔍 Analysis"}
         </button>
       </div>
 
       {/* Form Input Section */}
       <div className="flex flex-col gap-2">
-
         {/* Pair Dropdown */}
         <div>
           <label className="block text-xs text-gray-400 mb-1">Pair</label>
@@ -128,16 +127,21 @@ export default function AnalysisBox({
 
         {/* Strategies Checkbox */}
         <div className="flex flex-wrap gap-2">
-          {[ 'Support', 'Resistance', 'RBS', 'SBR', 'OCL', 'QM'].map((strategy) => (
-            <label key={strategy} className="flex items-center gap-1 text-xs text-gray-400">
-              <input
-                type="checkbox"
-                checked={strategies.includes(strategy)}
-                onChange={() => toggleStrategy(strategy)}
-              />
-              <span>{strategy}</span>
-            </label>
-          ))}
+          {["Support", "Resistance", "RBS", "SBR", "OCL", "QM"].map(
+            (strategy) => (
+              <label
+                key={strategy}
+                className="flex items-center gap-1 text-xs text-gray-400"
+              >
+                <input
+                  type="checkbox"
+                  checked={strategies.includes(strategy)}
+                  onChange={() => toggleStrategy(strategy)}
+                />
+                <span>{strategy}</span>
+              </label>
+            )
+          )}
         </div>
 
         {/* Levels Input */}
@@ -202,22 +206,43 @@ export default function AnalysisBox({
       {/* 🔥 Teknikal Result */}
       {aiResult && (
         <div className="mt-auto p-1 rounded bg-gradient-to-br from-slate-800 to-slate-900 shadow space-y-2 text-xs">
-          <h3 className="text-sm font-semibold text-gray-300 border-b border-slate-700 pb-1">👁️ Teknikal Analysis</h3>
+          <h3 className="text-sm font-semibold text-gray-300 border-b border-slate-700 pb-1">
+            👁️ Teknikal Analysis
+          </h3>
           <div className="grid grid-cols-2 gap-2">
-            <p><span className="text-green-300 font-medium">Trend:</span> {aiResult.trend}</p>
-            <p><span className="text-purple-300 font-medium">Bias:</span> {aiResult.bias}</p>
-            <p><span className="text-blue-300 font-medium">Entry:</span> {aiResult.entry}</p>
-            <p><span className="text-red-400 font-medium">Stop Loss:</span> {aiResult.sl}</p>
-            <p><span className="text-yellow-300 font-medium">Take Profit:</span> {aiResult.tp}</p>
+            <p>
+              <span className="text-green-300 font-medium">Trend:</span>{" "}
+              {aiResult.trend}
+            </p>
+            <p>
+              <span className="text-purple-300 font-medium">Bias:</span>{" "}
+              {aiResult.bias}
+            </p>
+            <p>
+              <span className="text-blue-300 font-medium">Entry:</span>{" "}
+              {aiResult.entry}
+            </p>
+            <p>
+              <span className="text-red-400 font-medium">Stop Loss:</span>{" "}
+              {aiResult.sl}
+            </p>
+            <p>
+              <span className="text-yellow-300 font-medium">Take Profit:</span>{" "}
+              {aiResult.tp}
+            </p>
           </div>
-          <p className="text-gray-400 italic text-xs pt-2 border-t border-slate-700">🧠 {aiResult.reason}</p>
+          <p className="text-gray-400 italic text-xs pt-2 border-t border-slate-700">
+            🧠 {aiResult.reason}
+          </p>
         </div>
       )}
 
       {/* 🔥 Fundamental Result */}
       {fundamental && (
         <div className="mt-4 p-2 rounded bg-gradient-to-br from-slate-800 to-slate-900 shadow text-xs text-gray-200 leading-relaxed space-y-2">
-          <h3 className="font-semibold text-gray-300 border-b border-slate-700 pb-1">📰Fundamental Analysis</h3>
+          <h3 className="font-semibold text-gray-300 border-b border-slate-700 pb-1">
+            📰Fundamental Analysis
+          </h3>
           <div className="whitespace-pre-line">{fundamental}</div>
         </div>
       )}
